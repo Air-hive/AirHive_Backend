@@ -1,9 +1,11 @@
 from zeroconf import ServiceBrowser, Zeroconf
 import time
 import threading
+from PrinterInfo import Printer
 
 discovered_printers = {}
 printer_lock = threading.Lock()
+printers = {}
 
 class PrinterServiceListener:
     def __init__(self):
@@ -44,6 +46,8 @@ class PrinterServiceListener:
 
                     with printer_lock:
                         discovered_printers[name] = printer_data
+                        printers[printer_data['ip']] = Printer()
+
                     print(f"Added printer: {name} at {printer_data['ip']}")
             except Exception as e:
                 print(f"Error adding service {name}: {str(e)}")
@@ -58,7 +62,6 @@ class PrinterServiceListener:
 
     def update_service(self, zeroconf, service_type, name):
         self.add_service(zeroconf, service_type, name)
-
 
 def start_zeroconf_discovery():
     zeroconf = Zeroconf()
