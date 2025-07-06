@@ -6,7 +6,10 @@ import mdns
 from mdns import printers
 from UploadFileToPrinter import upload_file_to_printer
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+
 app = Flask(__name__)
+CORS(app)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="16449f67-4694-4abc-a5cb-c82ba67d7dc3" name="Changes" comment="Added all end points with database but not used">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    <list default="true" id="16449f67-4694-4abc-a5cb-c82ba67d7dc3" name="Changes" comment="readme edit">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
     <list id="75eabc75-714f-4a87-ab32-ff9eef7a205a" name="Changes by abdullahzayed" comment="" />
     <list id="d083aa6c-f208-4f43-a09f-038eb40e77e8" name="Changes by mosa3" comment="" />
@@ -100,7 +101,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751821191029</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="readme edit">
+      <option name="closed" value="true" />
+      <created>1751821246444</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1751821246444</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -118,7 +127,8 @@
     <MESSAGE value="Fixing get_status and confirming it is working" />
     <MESSAGE value="Adding Database for files" />
     <MESSAGE value="Added all end points with database but not used" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added all end points with database but not used" />
+    <MESSAGE value="readme edit" />
+    <option name="LAST_COMMIT_MESSAGE" value="readme edit" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -139,7 +149,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/LocalBackend$PrinterInfo.coverage" NAME="PrinterInfo Coverage Results" MODIFIED="1751821099329" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/LocalBackend$LocalBackend.coverage" NAME="LocalBackend Coverage Results" MODIFIED="1751800593918" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/LocalBackend$Flask__app_py_.coverage" NAME="Flask (app.py) Coverage Results" MODIFIED="1751821103792" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LocalBackend$Flask__app_py_.coverage" NAME="Flask (app.py) Coverage Results" MODIFIED="1751825725736" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LocalBackend$UploadFileToPrinter.coverage" NAME="UploadFileToPrinter Coverage Results" MODIFIED="1751818475806" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
