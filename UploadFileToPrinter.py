@@ -36,10 +36,9 @@ def send_chunk(printer_ip,chunk):
 def upload_file_to_printer(printer_ip, data):
     max_len = 45 * 1024  # chunk size in characters
     file_name = data.get('file_name')
+    file_name = file_name.split('.')[0]
     file_name = file_name[:8] + ".gco"
     file_path = data.get('file_path')
-    priority = data.get('priority')
-
 
 
     header = ['M110 N0', 'M21', f'M28 {file_name}']
@@ -61,7 +60,7 @@ def upload_file_to_printer(printer_ip, data):
 
                 if curr_len >= max_len:
                     try:
-                        send_chunk(curr_chunk)
+                        send_chunk(printer_ip,curr_chunk)
                     except ConnectionResetError:
                         print('Connection error')
                     curr_chunk = []
@@ -69,7 +68,7 @@ def upload_file_to_printer(printer_ip, data):
 
         if curr_chunk:
             try:
-                send_chunk(curr_chunk)
+                send_chunk(printer_ip,curr_chunk)
             except ConnectionResetError:
                 pass
-    send_chunk(footer)
+    send_chunk(printer_ip,footer)

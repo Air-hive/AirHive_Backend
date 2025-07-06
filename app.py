@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, jsonify, make_response, send_
 from PrinterToBackend import send_commandd_to_printer, get_responses_from_printer
 import mdns
 from mdns import printers
+from UploadFileToPrinter import upload_file_to_printer
 from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -28,7 +29,6 @@ class JobModel(db.Model):
 # mDNS Discovery
 mdns.go()
 
-# endpoints for the front-end
 @app.route('/api/printers', methods=['GET'])
 def get_printers():
     with mdns.printer_lock:
@@ -127,6 +127,17 @@ def move_axis(printer_ip):
                     'z_coordinate': printer.z_coordinate,
                     'e_coordinate': printer.E_coordinate }), 200
 
+@app.route('/api/axis-coordinates/<printer_ip>', methods=['GET'])
+def get_axis_coordinates(printer_ip):
+    printer = printers[printer_ip]
+    send_commandd_to_printer(printer_ip, ["M114"])
+    update_responses(printer_ip)
+    return jsonify({'X': printer.x_coordinate,
+                    'Y': printer.y_coordinate,
+                    'Z': printer.z_coordinate,
+                    }), 200
+
+
 @app.route('/api/disable-motors/<printer_ip>', methods=['POST'])
 def disable_motors(printer_ip):
     printer = printers[printer_ip]
@@ -137,18 +148,27 @@ def disable_motors(printer_ip):
 
     return jsonify({'Status': "Motors off"}), 200
 
-@app.route('/api/upload_file/<printer_ip>', methods=['POST'])
-def upload_file_to_printer(printer_ip):
+@app.route('/api/sdcard-files/<printer_ip>', methods=['GET'])
+def sdcard_files(printer_ip):
+    send_commandd_to_printer(printer_ip, ["M20"])
+    update_responses(printer_ip)
+    return jsonify({'sdcard-files': printers[printer_ip].sd_card_files}), 200
+
+@app.route('/api/upload-to-sdcard/<printer_ip>', methods=['POST'])
+def upload_to_sdcard(printer_ip):
     data = request.json
     upload_file_to_printer(printer_ip, data)
-    new_job = JobModel(
-        file_name=data.get('file_name'),
-        file_path=data.get('file_path'),
-        priority=data.get('priority')
-    )
+    update_responses(printer_ip)
+    return jsonify({'sdcard-files': printers[printer_ip].sd_card_files}), 200
 
-    db.session.add(new_job)
-    db.session.commit()
+
+@app.route('/api/print-file/<printer_ip>', methods=['POST'])
+def print_file(printer_ip):
+    data = request.json
+    filename = data.get('filename')
+    send_commandd_to_printer(printer_ip, ["M21",f"M23 {filename}","M24"])
+    update_responses(printer_ip)
+    return jsonify({'Printing': filename}), 200
 
 #--------------------------------------------------------------------------------------------------------
 

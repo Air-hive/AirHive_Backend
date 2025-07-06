@@ -11,7 +11,7 @@ class Printer:
         self.heatbed_temperature = 0.0
         self.hotend_target_temperature = 0.0
         self.heatbed_target_temperature = 0.0
-        self.printer_status = "Unknown"
+        self.printer_status = "Idle"
         self.print_progress = "Unknown"
         self.print_time = ""
         self.sd_card_ok = False
@@ -48,13 +48,19 @@ class Printer:
                 continue
 
             # Position parsing (M114)
-            if line.startswith("X:"):
-                match = re.findall(r'([XYZE]):\s*(-?\d+\.?\d*)', line)
-                for axis, value in match:
-                    if axis == 'X': self.x_coordinate = float(value)
-                    if axis == 'Y': self.y_coordinate = float(value)
-                    if axis == 'Z': self.z_coordinate = float(value)
-                    if axis == 'E': self.E_coordinate = float(value)
+            if "X:" in line and "Count" in line:
+                line = line.split("Count")[0]  # Strip off "Count ..." part
+
+            match = re.findall(r'([XYZE]):\s*(-?\d+\.?\d*)', line)
+            for axis, value in match:
+                if axis == 'X':
+                    self.x_coordinate = float(value)
+                elif axis == 'Y':
+                    self.y_coordinate = float(value)
+                elif axis == 'Z':
+                    self.z_coordinate = float(value)
+                elif axis == 'E':
+                    self.E_coordinate = float(value)
 
             # Temperature parsing (M105)
             if 'T:' in line and 'B:' in line:
