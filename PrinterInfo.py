@@ -12,10 +12,10 @@ class Printer():
     heatbed_temperature = 0.0
     hotend_target_temperature = 0.0
     heatbed_target_temperature = 0.0
-    printer_status = None
-    print_progress = None
-    print_time = None
-    sd_card_ok = None
+    printer_status = ""
+    print_progress = ""
+    print_time = ""
+    sd_card_ok = ""
     sd_card_files = []
     fan_speed = 0
     buffer = ''
@@ -27,9 +27,9 @@ class Printer():
 
         in_file_list = False
 
-        responses = buffer.split("\n")
+        responses = self.buffer.split("\n")
         if responses[-1] != '':
-            buffer = responses[-1]
+            self.buffer = responses[-1]
             responses.pop()
 
         for line in responses:
@@ -129,7 +129,16 @@ class Printer():
                     printer_info = parts[1].strip()
 
             # Printer status detection
-            if "status:" in line:
-                parts = line.split('status:', 1)
-                if len(parts) > 1:
-                    printer_status = parts[1].strip()
+            if 'Not SD printing' in line:
+                self.printer_status = 'Idle'
+                self.print_progress = '0%'
+            elif 'SD printing byte' in line:
+                m = re.search(r'SD printing byte (\d+)/(\d+)', line)
+                if m:
+                    done = int(m.group(1))
+                    total = int(m.group(2))
+                    percent = round((done / total) * 100, 1)
+                    self.printer_status = 'Printing'
+                    self.print_progress = f'{percent}%'
+            else:
+                self.printer_status = 'Paused'

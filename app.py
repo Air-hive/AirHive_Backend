@@ -34,20 +34,21 @@ def send_commands():
     commands = data.get('commands')
     send_commandd_to_printer(printer_ip,commands)
 
-@app.route('/api/status/<printer_ip>', method=['GET'])
+@app.route('/api/status/<printer_ip>', methods=['GET'])
 def get_status(printer_ip):
     send_commandd_to_printer(printer_ip, ["M27"])
     response = get_responses_from_printer(printer_ip, 5000)
-    data = response.json()
+    data = response.json
     responses = data.get("responses")
-
     if not responses:
         return jsonify({'error' : 'No responses field'}), 400
 
-    printers[printer_ip].buffer.append(responses)
+    print(responses)
+    printers[printer_ip].buffer += responses
     printers[printer_ip].update_printer_variables()
 
     return jsonify({'status' : printers[printer_ip].printer_status}), 200
+
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
