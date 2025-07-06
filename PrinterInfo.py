@@ -1,31 +1,28 @@
 import re
 
-import PrinterToBackend
-#Printer Variables
-class Printer():
-    printer_info = None
-    x_coordinate = 0.0
-    y_coordinate = 0.0
-    z_coordinate = 0.0
-    E_coordinate = 0.0
-    hotend_temperature = 0.0
-    heatbed_temperature = 0.0
-    hotend_target_temperature = 0.0
-    heatbed_target_temperature = 0.0
-    printer_status = ""
-    print_progress = ""
-    print_time = ""
-    sd_card_ok = ""
-    sd_card_files = []
-    fan_speed = 0
-    buffer = ''
+class Printer:
+    def __init__(self):
+        self.printer_info = ""
+        self.x_coordinate = 0.0
+        self.y_coordinate = 0.0
+        self.z_coordinate = 0.0
+        self.E_coordinate = 0.0
+        self.hotend_temperature = 0.0
+        self.heatbed_temperature = 0.0
+        self.hotend_target_temperature = 0.0
+        self.heatbed_target_temperature = 0.0
+        self.printer_status = "Unknown"
+        self.print_progress = "Unknown"
+        self.print_time = ""
+        self.sd_card_ok = False
+        self.sd_card_files = []
+        self.fan_speed = 0
+        self.buffer = ""
+        self.last_sd_byte = -1  # for pause detection
 
     def update_printer_variables(self):
-        global printer_info, x_coordinate, y_coordinate, z_coordinate, E_coordinate, \
-            hotend_temperature, heatbed_temperature, hotend_target_temperature, heatbed_target_temperature, \
-            printer_status, print_progress, print_time, sd_card_ok, sd_card_files, fan_speed, buffer
-
         in_file_list = False
+        sd_files = []
 
         responses = self.buffer.split("\n")
         if responses[-1] != '':
@@ -35,110 +32,81 @@ class Printer():
         for line in responses:
             line = line.strip()
 
-            # Handle SD card file list parsing
+            # Handle SD file list
             if in_file_list:
                 if line == "End file list":
                     in_file_list = False
-                elif line:  # Skip empty lines
-                    sd_card_files.append(line)
+                    self.sd_card_files = sd_files
+                elif line:
+                    sd_files.append(line.strip())
                 continue
 
-            # Check for special markers
             if line == "Begin file list":
-                sd_card_files = []
                 in_file_list = True
+                sd_files = []
+                self.sd_card_ok = True
                 continue
 
-            # Parse key-value pairs
-            tokens = line.split()
-            for token in tokens:
-                # Coordinates parsing
-                if token.startswith('X:'):
-                    try:
-                        x_coordinate = float(token[2:])
-                    except:
-                        pass
-                elif token.startswith('Y:'):
-                    try:
-                        y_coordinate = float(token[2:])
-                    except:
-                        pass
-                elif token.startswith('Z:'):
-                    try:
-                        z_coordinate = float(token[2:])
-                    except:
-                        pass
-                elif token.startswith('E:'):
-                    try:
-                        E_coordinate = float(token[2:])
-                    except:
-                        pass
+            # Position parsing (M114)
+            if line.startswith("X:"):
+                match = re.findall(r'([XYZE]):\s*(-?\d+\.?\d*)', line)
+                for axis, value in match:
+                    if axis == 'X': self.x_coordinate = float(value)
+                    if axis == 'Y': self.y_coordinate = float(value)
+                    if axis == 'Z': self.z_coordinate = float(value)
+                    if axis == 'E': self.E_coordinate = float(value)
 
-                # Temperature parsing
-                elif token.startswith('T:'):
-                    try:
-                        parts = token[2:].split('/')
-                        hotend_temperature = float(parts[0])
-                        if len(parts) > 1:
-                            hotend_target_temperature = float(parts[1])
-                    except:
-                        pass
-                elif token.startswith('B:'):
-                    try:
-                        parts = token[2:].split('/')
-                        heatbed_temperature = float(parts[0])
-                        if len(parts) > 1:
-                            heatbed_target_temperature = float(parts[1])
-                    except:
-                        pass
+            # Temperature parsing (M105)
+            if 'T:' in line and 'B:' in line:
+                t_match = re.search(r'T:([\d.]+)\s*/\s*([\d.]+)', line)
+                b_match = re.search(r'B:([\d.]+)\s*/\s*([\d.]+)', line)
+                if t_match:
+                    self.hotend_temperature = float(t_match.group(1))
+                    self.hotend_target_temperature = float(t_match.group(2))
+                if b_match:
+                    self.heatbed_temperature = float(b_match.group(1))
+                    self.heatbed_target_temperature = float(b_match.group(2))
 
-                # Fan speed parsing
-                elif token.startswith('F:') or token.startswith('Fan:'):
-                    try:
-                        value = token.split(':')[1]
-                        fan_speed = int(re.search(r'\d+', value).group())
-                    except:
-                        pass
+                fan_match = re.search(r'@:(\d+)', line)
+                if fan_match:
+                    self.fan_speed = int(fan_match.group(1))
 
-            # SD card status detection
+            # SD card status
             if "SD card ok" in line:
-                sd_card_ok = True
+                self.sd_card_ok = True
             elif "SD card error" in line:
-                sd_card_ok = False
+                self.sd_card_ok = False
 
-            # Print progress detection
-            if 'Progress:' in line or '%' in line:
-                match = re.search(r'(\d{1,3}%)', line)
-                if match:
-                    print_progress = match.group(1)
-
-            # Print time detection
+            # Print time
             if "Print time:" in line:
-                parts = line.split('Print time:', 1)
+                parts = line.split("Print time:", 1)
                 if len(parts) > 1:
-                    print_time = parts[1].strip()
+                    self.print_time = parts[1].strip()
             elif "Time:" in line:
-                parts = line.split('Time:', 1)
+                parts = line.split("Time:", 1)
                 if len(parts) > 1:
-                    print_time = parts[1].strip()
+                    self.print_time = parts[1].strip()
 
-            # Printer info detection
+            # Printer info
             if "Printer:" in line:
-                parts = line.split('Printer:', 1)
+                parts = line.split("Printer:", 1)
                 if len(parts) > 1:
-                    printer_info = parts[1].strip()
+                    self.printer_info = parts[1].strip()
 
-            # Printer status detection
+            # M27 - SD printing byte
             if 'Not SD printing' in line:
                 self.printer_status = 'Idle'
                 self.print_progress = '0%'
+                self.last_sd_byte = -1
             elif 'SD printing byte' in line:
                 m = re.search(r'SD printing byte (\d+)/(\d+)', line)
                 if m:
                     done = int(m.group(1))
                     total = int(m.group(2))
                     percent = round((done / total) * 100, 1)
-                    self.printer_status = 'Printing'
+                    if self.last_sd_byte == done:
+                        self.printer_status = 'Paused'
+                    else:
+                        self.printer_status = 'Printing'
                     self.print_progress = f'{percent}%'
-            else:
-                self.printer_status = 'Paused'
+                    self.last_sd_byte = done

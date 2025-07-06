@@ -3,7 +3,6 @@ import json
 import mdns
 from flask import jsonify
 
-
 def send_commandd_to_printer(printer_ip, commands):
     if not printer_ip or not commands:
         return jsonify({"error": "Missing parameters"}), 400
