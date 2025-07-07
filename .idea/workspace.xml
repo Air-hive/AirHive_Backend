@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="16449f67-4694-4abc-a5cb-c82ba67d7dc3" name="Changes" comment="Enabling CROS">
+    <list default="true" id="16449f67-4694-4abc-a5cb-c82ba67d7dc3" name="Changes" comment="Adding print-progress endpoint">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PrinterInfo.py" beforeDir="false" afterPath="$PROJECT_DIR$/PrinterInfo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
     <list id="75eabc75-714f-4a87-ab32-ff9eef7a205a" name="Changes by abdullahzayed" comment="" />
@@ -61,7 +62,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Flask server.Flask (app.py).executor": "Run",
+    "Flask server.Flask (app.py).executor": "Debug",
     "Python.PrinterInfo.executor": "Run",
     "Python.UploadFileToPrinter.executor": "Run",
     "Python.app.executor": "Run",
@@ -94,7 +95,7 @@
       <option name="presentableId" value="Default" />
       <updated>1751793190489</updated>
       <workItem from="1751826102333" duration="35000" />
-      <workItem from="1751880405473" duration="1643000" />
+      <workItem from="1751880405473" duration="7077000" />
     </task>
     <task id="LOCAL-00001" summary="Fixing get_status and confirming it is working">
       <option name="closed" value="true" />
@@ -136,7 +137,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751826128080</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Adding print-progress endpoint">
+      <option name="closed" value="true" />
+      <created>1751884143769</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1751884143769</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -159,7 +168,8 @@
     <MESSAGE value="Added all end points with database but not used" />
     <MESSAGE value="readme edit" />
     <MESSAGE value="Enabling CROS" />
-    <option name="LAST_COMMIT_MESSAGE" value="Enabling CROS" />
+    <MESSAGE value="Adding print-progress endpoint" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding print-progress endpoint" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -174,13 +184,43 @@
           <line>29</line>
           <option name="timeStamp" value="36" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/PrinterInfo.py</url>
+          <line>31</line>
+          <option name="timeStamp" value="44" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/PrinterInfo.py</url>
+          <line>29</line>
+          <option name="timeStamp" value="45" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/PrinterInfo.py</url>
+          <line>27</line>
+          <option name="timeStamp" value="46" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/PrinterInfo.py</url>
+          <line>26</line>
+          <option name="timeStamp" value="47" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app.py</url>
+          <line>66</line>
+          <option name="timeStamp" value="48" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app.py</url>
+          <line>67</line>
+          <option name="timeStamp" value="49" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/LocalBackend$PrinterInfo.coverage" NAME="PrinterInfo Coverage Results" MODIFIED="1751821099329" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/LocalBackend$LocalBackend.coverage" NAME="LocalBackend Coverage Results" MODIFIED="1751800593918" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/LocalBackend$Flask__app_py_.coverage" NAME="Flask (app.py) Coverage Results" MODIFIED="1751825725736" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LocalBackend$Flask__app_py_.coverage" NAME="Flask (app.py) Coverage Results" MODIFIED="1751889322236" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/LocalBackend$UploadFileToPrinter.coverage" NAME="UploadFileToPrinter Coverage Results" MODIFIED="1751818475806" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

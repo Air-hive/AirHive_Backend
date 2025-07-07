@@ -58,7 +58,7 @@ def send_commands():
     send_commandd_to_printer(printer_ip, commands)
 
 
-@app.route('/api/update-responses/<printer_ip>', methods=['POST'])
+@app.route('/api/update-responses/<printer_ip>', methods=['GET'])
 def update_responses(printer_ip):
     printer = printers[printer_ip]
     response = get_responses_from_printer(printer_ip, 5000)
@@ -66,6 +66,9 @@ def update_responses(printer_ip):
     responses = data.get("responses")
     printer.buffer += responses
     printer.update_printer_variables()
+    request_response = jsonify({'raw_responses': printer.raw_buffer})
+    printer.raw_buffer.clear()
+    return request_response, 200
 
 
 @app.route('/api/status/<printer_ip>', methods=['GET'])
@@ -80,8 +83,8 @@ def get_temperature(printer_ip):
     printer = printers[printer_ip]
     send_commandd_to_printer(printer_ip, ["M105"])
     update_responses(printer_ip)
-    return jsonify({'hotend temperature': printer.hotend_temperature,
-                    'heatbed temperature': printer.heatbed_temperature
+    return jsonify({'hotend_temperature': printer.hotend_temperature,
+                    'heatbed_temperature': printer.heatbed_temperature
                     }), 200
 
 
@@ -90,8 +93,14 @@ def get_print_progress(printer_ip):
     printer = printers[printer_ip]
     send_commandd_to_printer(printer_ip, ["M27"])
     update_responses(printer_ip)
-    return jsonify({'Status': printer.printer_status},
-                   {'Progress': printer.print_progress}), 200
+    return jsonify({'Progress': printer.print_progress}), 200
+
+@app.route('/api/elapsed-time/<printer_ip>', methods=['GET'])
+def get_print_elapsed_time(printer_ip):
+    printer = printers[printer_ip]
+    send_commandd_to_printer(printer_ip, ["M31"])
+    update_responses(printer_ip)
+    return jsonify({'elapsed_time': printer.elapsed_time}), 200
 
 
 @app.route('/api/home/<printer_ip>', methods=['POST'])

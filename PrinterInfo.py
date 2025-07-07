@@ -12,14 +12,14 @@ class Printer:
         self.hotend_target_temperature = 0.0
         self.heatbed_target_temperature = 0.0
         self.printer_status = "Idle"
-        self.print_progress = "Unknown"
-        self.print_time = ""
+        self.print_progress = 0
+        self.elapsed_time = ""
         self.sd_card_ok = False
         self.sd_card_files = []
         self.fan_speed = 0
         self.buffer = ""
         self.last_sd_byte = -1  # for pause detection
-
+        self.raw_buffer = []
     def update_printer_variables(self):
         in_file_list = False
         sd_files = []
@@ -29,6 +29,7 @@ class Printer:
             self.buffer = responses[-1]
             responses.pop()
 
+        self.raw_buffer.extend(responses)
         for line in responses:
             line = line.strip()
 
@@ -87,11 +88,11 @@ class Printer:
             if "Print time:" in line:
                 parts = line.split("Print time:", 1)
                 if len(parts) > 1:
-                    self.print_time = parts[1].strip()
+                    self.elapsed_time = parts[1].strip()
             elif "Time:" in line:
                 parts = line.split("Time:", 1)
                 if len(parts) > 1:
-                    self.print_time = parts[1].strip()
+                    self.elapsed_time = parts[1].strip()
 
             # Printer info
             if "Printer:" in line:
@@ -102,7 +103,7 @@ class Printer:
             # M27 - SD printing byte
             if 'Not SD printing' in line:
                 self.printer_status = 'Idle'
-                self.print_progress = '0%'
+                self.print_progress = 0
                 self.last_sd_byte = -1
             elif 'SD printing byte' in line:
                 m = re.search(r'SD printing byte (\d+)/(\d+)', line)
@@ -114,5 +115,5 @@ class Printer:
                         self.printer_status = 'Paused'
                     else:
                         self.printer_status = 'Printing'
-                    self.print_progress = f'{percent}%'
+                    self.print_progress = percent
                     self.last_sd_byte = done
