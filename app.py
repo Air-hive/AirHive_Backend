@@ -15,6 +15,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+
 class JobModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     file_name = db.Column(db.String(100), nullable=False)
@@ -29,8 +30,10 @@ class JobModel(db.Model):
             "priority": self.priority
         }
 
+
 # mDNS Discovery
 mdns.go()
+
 
 @app.route('/api/printers', methods=['GET'])
 def get_printers():
@@ -46,12 +49,14 @@ def get_printers():
 
     return jsonify(printers)
 
+
 @app.route('/api/send-command', methods=['POST'])
 def send_commands():
     data = request.json
     printer_ip = data.get('printer_ip')
     commands = data.get('commands')
     send_commandd_to_printer(printer_ip, commands)
+
 
 @app.route('/api/update-responses/<printer_ip>', methods=['POST'])
 def update_responses(printer_ip):
@@ -62,11 +67,13 @@ def update_responses(printer_ip):
     printer.buffer += responses
     printer.update_printer_variables()
 
+
 @app.route('/api/status/<printer_ip>', methods=['GET'])
 def get_status(printer_ip):
     send_commandd_to_printer(printer_ip, ["M27"])
     update_responses(printer_ip)
     return jsonify({'status': printers[printer_ip].printer_status}), 200
+
 
 @app.route('/api/temperature/<printer_ip>', methods=['GET'])
 def get_temperature(printer_ip):
@@ -76,6 +83,16 @@ def get_temperature(printer_ip):
     return jsonify({'hotend temperature': printer.hotend_temperature,
                     'heatbed temperature': printer.heatbed_temperature
                     }), 200
+
+
+@app.route('/api/print-progress/<printer_ip>', methods=['GET'])
+def get_print_progress(printer_ip):
+    printer = printers[printer_ip]
+    send_commandd_to_printer(printer_ip, ["M27"])
+    update_responses(printer_ip)
+    return jsonify({'Status': printer.printer_status},
+                   {'Progress': printer.print_progress}), 200
+
 
 @app.route('/api/home/<printer_ip>', methods=['POST'])
 def home_axis(printer_ip):
@@ -102,6 +119,7 @@ def home_axis(printer_ip):
                     'z_coordinate': printer.z_coordinate
                     }), 200
 
+
 # G0 X10 Y20 Z0.3 F3000
 @app.route('/api/move_axis/<printer_ip>', methods=['POST'])
 def move_axis(printer_ip):
@@ -122,13 +140,14 @@ def move_axis(printer_ip):
     if e_distance:
         command += f" E{e_distance}"
 
-    send_commandd_to_printer(printer_ip, ["G91",command])
+    send_commandd_to_printer(printer_ip, ["G91", command])
     update_responses(printer_ip)
 
     return jsonify({'x_coordinate': printer.x_coordinate,
                     'y_coordinate': printer.y_coordinate,
                     'z_coordinate': printer.z_coordinate,
-                    'e_coordinate': printer.E_coordinate }), 200
+                    'e_coordinate': printer.E_coordinate}), 200
+
 
 @app.route('/api/axis-coordinates/<printer_ip>', methods=['GET'])
 def get_axis_coordinates(printer_ip):
@@ -146,16 +165,18 @@ def disable_motors(printer_ip):
     printer = printers[printer_ip]
     command = "M84"
 
-    send_commandd_to_printer(printer_ip, ["G91",command])
+    send_commandd_to_printer(printer_ip, ["G91", command])
     update_responses(printer_ip)
 
     return jsonify({'Status': "Motors off"}), 200
+
 
 @app.route('/api/sdcard-files/<printer_ip>', methods=['GET'])
 def sdcard_files(printer_ip):
     send_commandd_to_printer(printer_ip, ["M20"])
     update_responses(printer_ip)
     return jsonify({'sdcard-files': printers[printer_ip].sd_card_files}), 200
+
 
 @app.route('/api/upload-to-sdcard/<printer_ip>', methods=['POST'])
 def upload_to_sdcard(printer_ip):
@@ -169,18 +190,19 @@ def upload_to_sdcard(printer_ip):
 def print_file(printer_ip):
     data = request.json
     filename = data.get('filename')
-    send_commandd_to_printer(printer_ip, ["M21",f"M23 {filename}","M24"])
+    send_commandd_to_printer(printer_ip, ["M21", f"M23 {filename}", "M24"])
     update_responses(printer_ip)
     return jsonify({'Printing': filename}), 200
 
-#--------------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------------
 
 # --- Create (POST) ---
 @app.route('/api/jobs', methods=['POST'])
 def create_job():
     data = request.json
     file_name = data.get('file_name')
-    file_path =data.get('file_path')
+    file_path = data.get('file_path')
     priority = data.get('priority')
 
     if not file_name or not file_path or not priority:
@@ -196,17 +218,20 @@ def create_job():
     db.session.commit()
     return jsonify(new_job.to_dict()), 201
 
+
 # --- Read All (GET) ---
 @app.route('/api/jobs', methods=['GET'])
 def get_jobs():
     jobs = JobModel.query.all()
     return jsonify([job.to_dict() for job in jobs])
 
+
 # --- Read One (GET) ---
 @app.route('/api/jobs/<int:job_id>', methods=['GET'])
 def get_job(job_id):
     job = JobModel.query.get_or_404(job_id)
     return jsonify(job.to_dict())
+
 
 # --- Update (PUT) ---
 @app.route('/api/jobs/<int:job_id>', methods=['PUT'])
@@ -219,6 +244,7 @@ def update_job(job_id):
     db.session.commit()
     return jsonify(job.to_dict())
 
+
 # --- Delete (DELETE) ---
 @app.route('/api/jobs/<int:job_id>', methods=['DELETE'])
 def delete_job(job_id):
@@ -226,6 +252,7 @@ def delete_job(job_id):
     db.session.delete(job)
     db.session.commit()
     return jsonify({"message": "Job deleted"})
+
 
 # --- Initialize Database ---
 with app.app_context():

@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="16449f67-4694-4abc-a5cb-c82ba67d7dc3" name="Changes" comment="readme edit">
+    <list default="true" id="16449f67-4694-4abc-a5cb-c82ba67d7dc3" name="Changes" comment="Enabling CROS">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
@@ -36,6 +36,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Mo7amed-Sa3d&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/AbdullahKhkmba/Local_Backend.git&quot;,
+    &quot;accountId&quot;: &quot;116e699e-75bd-4617-8c1d-85ed6e3c16b0&quot;
+  }
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -58,13 +70,18 @@
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "last_opened_file_path": "/Users/abdullahzayed/Desktop/GP_tests/Local_Backend",
-    "node.js.selected.package.tslint": "(autodetect)"
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-14705d77f0bb-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.25659.43" />
+        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-PY-251.26094.141" />
+        <option value="bundled-python-sdk-9f8e2b94138c-36ea0e71a18c-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.26094.141" />
       </set>
     </attachedChunks>
   </component>
@@ -76,6 +93,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1751793190489</updated>
+      <workItem from="1751826102333" duration="35000" />
+      <workItem from="1751880405473" duration="1643000" />
     </task>
     <task id="LOCAL-00001" summary="Fixing get_status and confirming it is working">
       <option name="closed" value="true" />
@@ -109,8 +128,19 @@
       <option name="project" value="LOCAL" />
       <updated>1751821246444</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Enabling CROS">
+      <option name="closed" value="true" />
+      <created>1751826128080</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1751826128080</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -128,7 +158,8 @@
     <MESSAGE value="Adding Database for files" />
     <MESSAGE value="Added all end points with database but not used" />
     <MESSAGE value="readme edit" />
-    <option name="LAST_COMMIT_MESSAGE" value="readme edit" />
+    <MESSAGE value="Enabling CROS" />
+    <option name="LAST_COMMIT_MESSAGE" value="Enabling CROS" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
