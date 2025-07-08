@@ -20,6 +20,9 @@ class Printer:
         self.buffer = ""
         self.last_sd_byte = -1  # for pause detection
         self.raw_buffer = []
+
+    def clear_raw_buffer(self):
+        self.raw_buffer = []
     def update_printer_variables(self):
         in_file_list = False
         sd_files = []
@@ -28,8 +31,9 @@ class Printer:
         if responses[-1] != '':
             self.buffer = responses[-1]
             responses.pop()
-
-        self.raw_buffer.extend(responses)
+        else:
+            self.buffer = ""
+        self.raw_buffer.extend([r for r in responses if r])
         for line in responses:
             line = line.strip()
 

@@ -15,7 +15,7 @@ def send_commandd_to_printer(printer_ip, commands):
         )
 
         if response.status_code == 200:
-            return jsonify(response.json())
+            return jsonify(response.json()),200
         else:
             return jsonify({"error": f"Printer returned {response.status_code}"}), 500
 
@@ -33,7 +33,7 @@ def get_responses_from_printer(printer_ip, size):
             timeout=5
         )
         if response.status_code == 200:
-            return jsonify(response.json())
+            return jsonify(response.json()),200
         else:
             return jsonify({"error": f"Printer returned {response.status_code}"}), 500
 
@@ -52,7 +52,7 @@ def config_printer(printer_ip, baudrate):
         )
 
         if response.status_code == 200:
-            return jsonify(response.json())
+            return jsonify(response.json()), 200
         else:
             return jsonify({"error": f"Printer returned {response.status_code}"}), 500
 
