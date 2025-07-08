@@ -54,9 +54,10 @@ def get_printers():
 def send_commands(printer_ip):
     data = request.json
     commands = data.get('commands')
-    send_commandd_to_printer(printer_ip, commands)
+    response = send_commandd_to_printer(printer_ip, commands)
+    response_obj, status = response
     update_printer_responses(printer_ip)
-    return jsonify({'sent_commands': len(commands)}), 200
+    return response_obj.get_json(), 200
 
 @app.route('/api/update-responses/<printer_ip>', methods=['GET'])
 def update_printer_responses(printer_ip):
@@ -91,28 +92,31 @@ def get_raw_responses(printer_ip):
 @app.route('/api/status/<printer_ip>', methods=['GET'])
 def get_status(printer_ip):
     printer = printers[printer_ip]
-    send_commandd_to_printer(printer_ip, ["M27"])
+    response = send_commandd_to_printer(printer_ip, ["M27"])
+    response_obj, status = response
     update_printer_responses(printer_ip)
     return jsonify({'status': printer.printer_status,
-                    'Progress': printer.print_progress}), 200
+                    'Progress': printer.print_progress}), status
 
 
 @app.route('/api/temperature/<printer_ip>', methods=['GET'])
 def get_temperature(printer_ip):
     printer = printers[printer_ip]
-    send_commandd_to_printer(printer_ip, ["M105"])
+    response = send_commandd_to_printer(printer_ip, ["M105"])
+    response_obj, status = response
     update_printer_responses(printer_ip)
     return jsonify({'hotend_temperature': printer.hotend_temperature,
                     'heatbed_temperature': printer.heatbed_temperature
-                    }), 200
+                    }), status
 
 
 @app.route('/api/elapsed-time/<printer_ip>', methods=['GET'])
 def get_print_elapsed_time(printer_ip):
     printer = printers[printer_ip]
-    send_commandd_to_printer(printer_ip, ["M31"])
+    response = send_commandd_to_printer(printer_ip, ["M31"])
+    response_obj, status = response
     update_printer_responses(printer_ip)
-    return jsonify({'elapsed_time': printer.elapsed_time}), 200
+    return jsonify({'elapsed_time': printer.elapsed_time}), status
 
 
 @app.route('/api/home/<printer_ip>', methods=['POST'])
@@ -133,12 +137,13 @@ def home_axis(printer_ip):
         else:
             command = ""
             return jsonify({'error': 'Wrong json fields'}), 400
-    send_commandd_to_printer(printer_ip, [command])
+    response = send_commandd_to_printer(printer_ip, [command])
+    response_obj, status = response
     update_printer_responses(printer_ip)
     return jsonify({'x_coordinate': printer.x_coordinate,
                     'y_coordinate': printer.y_coordinate,
                     'z_coordinate': printer.z_coordinate
-                    }), 200
+                    }), status
 
 
 # G0 X10 Y20 Z0.3 F3000
@@ -161,42 +166,43 @@ def move_axis(printer_ip):
     if e_distance:
         command += f" E{e_distance}"
 
-    send_commandd_to_printer(printer_ip, ["G91", command])
+    response = send_commandd_to_printer(printer_ip, ["G91", command])
+    response_obj, status = response
     update_printer_responses(printer_ip)
 
     return jsonify({'x_coordinate': printer.x_coordinate,
                     'y_coordinate': printer.y_coordinate,
                     'z_coordinate': printer.z_coordinate,
-                    'e_coordinate': printer.E_coordinate}), 200
+                    'e_coordinate': printer.E_coordinate}), status
 
 
 @app.route('/api/axis-coordinates/<printer_ip>', methods=['GET'])
 def get_axis_coordinates(printer_ip):
     printer = printers[printer_ip]
-    send_commandd_to_printer(printer_ip, ["M114"])
+    response = send_commandd_to_printer(printer_ip, ["M114"])
+    response_obj, status = response
     update_printer_responses(printer_ip)
     return jsonify({'X': printer.x_coordinate,
                     'Y': printer.y_coordinate,
                     'Z': printer.z_coordinate,
-                    }), 200
+                    }), status
 
 
 @app.route('/api/disable-motors/<printer_ip>', methods=['POST'])
 def disable_motors(printer_ip):
-    printer = printers[printer_ip]
     command = "M84"
-
-    send_commandd_to_printer(printer_ip, ["G91", command])
+    response = send_commandd_to_printer(printer_ip, ["G91", command])
+    response_obj, status = response
     update_printer_responses(printer_ip)
-
-    return jsonify({'Status': "Motors off"}), 200
+    return jsonify({'Status': "Motors off"}), status
 
 
 @app.route('/api/sdcard-files/<printer_ip>', methods=['GET'])
 def sdcard_files(printer_ip):
-    send_commandd_to_printer(printer_ip, ["M20"])
+    response = send_commandd_to_printer(printer_ip, ["M20"])
+    response_obj, status = response
     update_printer_responses(printer_ip)
-    return jsonify({'sdcard-files': printers[printer_ip].sd_card_files}), 200
+    return jsonify({'sdcard-files': printers[printer_ip].sd_card_files}), status
 
 
 @app.route('/api/upload-to-sdcard/<printer_ip>', methods=['POST'])
@@ -211,9 +217,10 @@ def upload_to_sdcard(printer_ip):
 def print_file(printer_ip):
     data = request.json
     filename = data.get('filename')
-    send_commandd_to_printer(printer_ip, ["M21", f"M23 {filename}", "M24"])
+    response = send_commandd_to_printer(printer_ip, ["M21", f"M23 {filename}", "M24"])
+    response_obj, status = response
     update_printer_responses(printer_ip)
-    return jsonify({'Printing': filename}), 200
+    return jsonify({'Printing': filename}), status
 
 
 # --------------------------------------------------------------------------------------------------------
