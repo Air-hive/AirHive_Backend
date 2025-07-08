@@ -28,6 +28,7 @@ def get_responses_from_printer(printer_ip, size):
         return jsonify({"error": "Missing parameters"}), 400
 
     try:
+        time.sleep(1)
         response = requests.get(
             f"http://{printer_ip}/responses",
             json={"size": size},
@@ -48,6 +49,7 @@ def config_printer(printer_ip, baudrate):
         return jsonify({"error": "Missing parameters"}), 400
 
     try:
+        time.sleep(1)
         response = requests.put(
             f"http://{printer_ip}/machine-config",
             json={"baudrate": baudrate},

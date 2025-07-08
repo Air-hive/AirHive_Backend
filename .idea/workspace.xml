@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="16449f67-4694-4abc-a5cb-c82ba67d7dc3" name="Changes" comment="Returning the real status code from the printer">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrinterToBackend.py" beforeDir="false" afterPath="$PROJECT_DIR$/PrinterToBackend.py" afterDir="false" />
-    </list>
+    <list default="true" id="16449f67-4694-4abc-a5cb-c82ba67d7dc3" name="Changes" comment="Fixing Status return" />
     <list id="75eabc75-714f-4a87-ab32-ff9eef7a205a" name="Changes by abdullahzayed" comment="" />
     <list id="d083aa6c-f208-4f43-a09f-038eb40e77e8" name="Changes by mosa3" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -98,7 +95,7 @@
       <workItem from="1751826102333" duration="35000" />
       <workItem from="1751880405473" duration="7555000" />
       <workItem from="1751892738787" duration="18558000" />
-      <workItem from="1751967342453" duration="7181000" />
+      <workItem from="1751967342453" duration="7614000" />
     </task>
     <task id="LOCAL-00001" summary="Fixing get_status and confirming it is working">
       <option name="closed" value="true" />
@@ -172,7 +169,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751972442416</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Fixing Status return">
+      <option name="closed" value="true" />
+      <created>1751976403794</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1751976403794</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -199,7 +204,8 @@
     <MESSAGE value="updating the update_response endpoint so that it can return the raw responses" />
     <MESSAGE value="Fixing get_response bug" />
     <MESSAGE value="Returning the real status code from the printer" />
-    <option name="LAST_COMMIT_MESSAGE" value="Returning the real status code from the printer" />
+    <MESSAGE value="Fixing Status return" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixing Status return" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/LocalBackend$PrinterToBackend.coverage" NAME="PrinterToBackend Coverage Results" MODIFIED="1751975949198" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
