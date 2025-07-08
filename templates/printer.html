@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Printer Control Panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <header class="app-header">
+        <button class="btn-back" onclick="location.href='/'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5"></path>
+                <path d="M12 19l-7-7 7-7"></path>
+            </svg>
+            Dashboard
+        </button>
+        <h1 id="printer-name">Printer Control</h1>
+        <div class="printer-status-display">
+            <span id="connection-status" class="offline">Offline</span>
+        </div>
+    </header>
+
+    <main class="printer-control">
+        <div class="control-grid">
+            <!-- Temperature Control -->
+            <section class="control-panel temp-control">
+                <h2>Temperature</h2>
+                <div class="temp-display">
+                    <div class="temp-item">
+                        <label>Hotend</label>
+                        <div class="temp-value">
+                            <span id="hotend-actual">0</span>°C / 
+                            <span id="hotend-target">0</span>°C
+                        </div>
+                        <div class="temp-controls">
+                            <input type="number" id="hotend-set" min="0" max="300" value="0">
+                            <button class="btn-small" onclick="setHotendTemp()">SET</button>
+                        </div>
+                    </div>
+                    <div class="temp-item">
+                        <label>Heatbed</label>
+                        <div class="temp-value">
+                            <span id="bed-actual">0</span>°C / 
+                            <span id="bed-target">0</span>°C
+                        </div>
+                        <div class="temp-controls">
+                            <input type="number" id="bed-set" min="0" max="120" value="0">
+                            <button class="btn-small" onclick="setBedTemp()">SET</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Movement Controls -->
+            <section class="control-panel movement-control">
+                <h2>Movement</h2>
+                <div class="axis-controls">
+                    <div class="axis" id="axis-x">
+                        <label>X Axis</label>
+                        <div class="axis-buttons">
+                            <button class="btn-axis" data-axis="x" data-dir="-">-</button>
+                            <span id="x-pos">0.0</span>
+                            <button class="btn-axis" data-axis="x" data-dir="+">+</button>
+                        </div>
+                    </div>
+                    <div class="axis" id="axis-y">
+                        <label>Y Axis</label>
+                        <div class="axis-buttons">
+                            <button class="btn-axis" data-axis="y" data-dir="-">-</button>
+                            <span id="y-pos">0.0</span>
+                            <button class="btn-axis" data-axis="y" data-dir="+">+</button>
+                        </div>
+                    </div>
+                    <div class="axis" id="axis-z">
+                        <label>Z Axis</label>
+                        <div class="axis-buttons">
+                            <button class="btn-axis" data-axis="z" data-dir="-">-</button>
+                            <span id="z-pos">0.0</span>
+                            <button class="btn-axis" data-axis="z" data-dir="+">+</button>
+                        </div>
+                    </div>
+                    <div class="axis" id="axis-e">
+                        <label>Extruder</label>
+                        <div class="axis-buttons">
+                            <button class="btn-axis" data-axis="e" data-dir="-">-</button>
+                            <span id="e-pos">0.0</span>
+                            <button class="btn-axis" data-axis="e" data-dir="+">+</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="movement-settings">
+                    <label>Step Size (mm)</label>
+                    <select id="step-size">
+                        <option value="0.1">0.1</option>
+                        <option value="1" selected>1</option>
+                        <option value="10">10</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <div class="homing-controls">
+                    <button class="btn-action" id="home-all">Home All</button>
+                    <button class="btn-action" id="disable-motors">Disable Motors</button>
+                </div>
+            </section>
+
+            <!-- Print Controls -->
+            <section class="control-panel print-control">
+                <h2>Print Job</h2>
+                <div class="print-status">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="print-progress" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progress-text">0%</span>
+                        <span id="elapsed-time">00:00:00</span>
+                    </div>
+                </div>
+                <div class="print-actions">
+{#                    <button class="btn-print" id="btn-start">Start Print</button>#}
+                    <button class="btn-print pause" id="btn-pause">Pause</button>
+                    <button class="btn-print stop" id="btn-stop">Stop</button>
+                </div>
+                <div class="file-controls">
+                    <h3>SD Card Files</h3>
+                    <div class="file-list" id="file-list">
+                        <!-- Files will be populated here -->
+                    </div>
+                    <button class="btn-action" id="refresh-files">Refresh Files</button>
+                </div>
+            </section>
+
+            <!-- Console -->
+            <section class="control-panel console">
+                <h2>Console</h2>
+                <div class="console-output" id="console-output">
+                    <!-- Console messages appear here -->
+                </div>
+                <div class="console-input">
+                    <input type="text" id="gcode-input" placeholder="Enter G-code command...">
+                    <button id="send-gcode">Send</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Get printer IP from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const printerIp = urlParams.get('ip');
+        let printerName = '3D Printer';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!printerIp) {
+                alert('No printer selected!');
+                window.location.href = '/';
+                return;
+            }
+
+            // Set printer name in header
+            document.getElementById('printer-name').textContent = `${printerIp} Control Panel`;
+
+            // Setup event listeners
+            setupEventListeners();
+
+            // Start periodic updates
+            updatePrinterStatus();
+            setInterval(updatePrinterStatus, 5000);
+            setInterval(updateTemperatures, 3000);
+            setInterval(updatePosition, 4000);
+            setInterval(updateConsole, 2000);
+            updateSDFiles();
+        });
+
+        function setupEventListeners() {
+            // Axis movement buttons
+            document.querySelectorAll('.btn-axis').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const axis = e.target.dataset.axis.toUpperCase();
+                    const direction = e.target.dataset.dir;
+                    const stepSize = parseFloat(document.getElementById('step-size').value);
+                    const distance = direction === '+' ? stepSize : -stepSize;
+
+                    moveAxis(axis, distance);
+                });
+            });
+
+            // Homing buttons
+            document.getElementById('home-all').addEventListener('click', () => {
+                homeAxis(['X', 'Y', 'Z']);
+            });
+
+            document.getElementById('disable-motors').addEventListener('click', () => {
+                disableMotors();
+            });
+
+            // Print control buttons
+            document.getElementById('btn-start').addEventListener('click', startPrint);
+            document.getElementById('btn-pause').addEventListener('click', pausePrint);
+            document.getElementById('btn-stop').addEventListener('click', stopPrint);
+
+            // File refresh
+            document.getElementById('refresh-files').addEventListener('click', updateSDFiles);
+
+            // G-code sending
+            document.getElementById('send-gcode').addEventListener('click', sendGcode);
+            document.getElementById('gcode-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendGcode();
+            });
+        }
+
+        // API call functions
+        async function updatePrinterStatus() {
+            try {
+                const response = await fetch(`/api/status/${printerIp}`);
+                const data = await response.json();
+
+                document.getElementById('connection-status').textContent = data.status;
+                document.getElementById('connection-status').className = data.status.toLowerCase();
+                document.getElementById('print-progress').style.width = `${data.Progress}%`;
+                document.getElementById('progress-text').textContent = `${data.Progress}%`;
+            } catch (error) {
+                console.error('Error fetching printer status:', error);
+            }
+        }
+
+        async function updateTemperatures() {
+            try {
+                const response = await fetch(`/api/temperature/${printerIp}`);
+                const data = await response.json();
+
+                document.getElementById('hotend-actual').textContent = data.hotend_temperature;
+                document.getElementById('hotend-target').textContent = data.hotend_target;
+
+                document.getElementById('bed-actual').textContent = data.heatbed_temperature;
+                document.getElementById('bed-target').textContent = data.heatbed_target;
+
+            } catch (error) {
+                console.error('Error fetching temperatures:', error);
+            }
+        }
+
+        async function updatePosition() {
+            try {
+                const response = await fetch(`/api/axis-coordinates/${printerIp}`);
+                const data = await response.json();
+
+                document.getElementById('x-pos').textContent = data.X.toFixed(1);
+                document.getElementById('y-pos').textContent = data.Y.toFixed(1);
+                document.getElementById('z-pos').textContent = data.Z.toFixed(1);
+            } catch (error) {
+                console.error('Error fetching position:', error);
+            }
+        }
+
+        async function updateSDFiles() {
+            try {
+                const response = await fetch(`/api/sdcard-files/${printerIp}`);
+                const data = await response.json();
+                const fileList = document.getElementById('file-list');
+                fileList.innerHTML = '';
+
+                data.sdcard_files.forEach(file => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    fileItem.innerHTML = `
+                        <span>${file}</span>
+                        <button class="btn-small" onclick="printFile('${file}')">Print</button>
+                    `;
+                    fileList.appendChild(fileItem);
+                });
+            } catch (error) {
+                console.error('Error fetching SD files:', error);
+            }
+        }
+
+        async function updateConsole() {
+            try {
+                const response = await fetch(`/api/raw-responses/${printerIp}`);
+                const data = await response.json();
+                const consoleOutput = document.getElementById('console-output');
+
+                if (data.raw_responses) {
+                    data.raw_responses.split('\n').forEach(line => {
+                        if (line.trim()) {
+                            const lineElement = document.createElement('div');
+                            lineElement.textContent = `> ${line}`;
+                            consoleOutput.appendChild(lineElement);
+                        }
+                    });
+
+                    // Auto-scroll to bottom
+                    consoleOutput.scrollTop = consoleOutput.scrollHeight;
+                }
+            } catch (error) {
+                console.error('Error fetching console:', error);
+            }
+        }
+
+        async function moveAxis(axis, distance) {
+            try {
+                await fetch(`/api/move_axis/${printerIp}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        [axis === 'E' ? 'e_distance' : `${axis.toLowerCase()}_distance`]: distance
+                    })
+                });
+                updatePosition();
+            } catch (error) {
+                console.error('Error moving axis:', error);
+            }
+        }
+
+        async function homeAxis(axes) {
+            try {
+                await fetch(`/api/home/${printerIp}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ 'axis-to-home': axes })
+                });
+                updatePosition();
+            } catch (error) {
+                console.error('Error homing axis:', error);
+            }
+        }
+
+        async function disableMotors() {
+            try {
+                await fetch(`/api/disable-motors/${printerIp}`, {
+                    method: 'POST'
+                });
+            } catch (error) {
+                console.error('Error disabling motors:', error);
+            }
+        }
+
+        async function setHotendTemp() {
+            const temp = document.getElementById('hotend-set').value;
+            try {
+                await fetch(`/api/send-command/${printerIp}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        commands: [`M104 S${temp}`]
+                    })
+                });
+            } catch (error) {
+                console.error('Error setting hotend temperature:', error);
+            }
+        }
+
+        async function setBedTemp() {
+            const temp = document.getElementById('bed-set').value;
+            try {
+                await fetch(`/api/send-command/${printerIp}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        commands: [`M140 S${temp}`]
+                    })
+                });
+            } catch (error) {
+                console.error('Error setting bed temperature:', error);
+            }
+        }
+
+        async function printFile(filename) {
+            try {
+                await fetch(`/api/print-file/${printerIp}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ filename })
+                });
+            } catch (error) {
+                console.error('Error starting print:', error);
+            }
+        }
+
+        async function sendGcode() {
+            const command = document.getElementById('gcode-input').value;
+            if (!command) return;
+
+            try {
+                await fetch(`/api/send-command/${printerIp}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        commands: [command]
+                    })
+                });
+                document.getElementById('gcode-input').value = '';
+            } catch (error) {
+                console.error('Error sending G-code:', error);
+            }
+        }
+
+        function startPrint() {
+            // Implementation would show file selection
+            alert('Select a file from the SD Card list to print');
+        }
+
+        function pausePrint() {
+            sendGcodeCommand('M25'); // Pause SD print
+        }
+
+        function stopPrint() {
+            sendGcodeCommand('M0'); // Stop print
+        }
+
+        async function sendGcodeCommand(command) {
+            try {
+                await fetch(`/api/send-command/${printerIp}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        commands: [command]
+                    })
+                });
+            } catch (error) {
+                console.error('Error sending command:', error);
+            }
+        }
+    </script>
+</body>
+</html>

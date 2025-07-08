@@ -1,48 +1,55 @@
 import time
-
 import requests
-import json
-import mdns
 from flask import jsonify
+
+MAX_RETRIES = 5
+RETRY_DELAY = 0.1  # seconds
 
 def send_commandd_to_printer(printer_ip, commands):
     if not printer_ip or not commands:
         return jsonify({"error": "Missing parameters"}), 400
 
-    try:
-        response = requests.post(
-            f"http://{printer_ip}/commands",
-            json={"commands": commands},
-            timeout=5
-        )
-        if response.status_code == 200:
-            return jsonify(response.json()),200
-        else:
-            return jsonify({"error": f"Printer returned {response.status_code}"}), 500
+    url = f"http://{printer_ip}/commands"
+    payload = {"commands": commands}
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            response = requests.post(url, json=payload, timeout=5)
 
-def get_responses_from_printer(printer_ip, size):
-    if not printer_ip or not size:
+            if response.status_code == 200:
+                return jsonify(response.json()), 200
+            else:
+                # print(f"[Attempt {attempt}] Printer returned status {response.status_code}")
+                return jsonify({"error": f"Printer returned {response.status_code}"}), 500
+
+        except requests.exceptions.RequestException as e:
+            # print(f"[Attempt {attempt}] send_commandd_to_printer error: {e}")
+            if attempt == MAX_RETRIES:
+                return jsonify({"error": str(e)}), 500
+            time.sleep(RETRY_DELAY)
+
+
+def get_responses_from_printer(printer_ip):
+    if not printer_ip:
         return jsonify({"error": "Missing parameters"}), 400
 
-    try:
-        time.sleep(1)
-        response = requests.get(
-            f"http://{printer_ip}/responses",
-            json={"size": size},
-            timeout=10
-        )
+    url = f"http://{printer_ip}/responses"
 
-        if response.status_code == 200:
-            return jsonify(response.json()),200
-        else:
-            return jsonify({"error": f"Printer returned {response.status_code}"}), 500
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            response = requests.get(url, timeout=5)
 
-    except Exception as e:
-        print(f"Printer returned: from exception: {e}",printer_ip)
-        return jsonify({"error": str(e)}), 500
+            if response.status_code == 200:
+                return jsonify(response.json()), 200
+            else:
+                # print(f"[Attempt {attempt}] Printer returned status {response.status_code}")
+                return jsonify({"error": f"Printer returned {response.status_code}"}), 500
+
+        except requests.exceptions.RequestException as e:
+            # print(f"[Attempt {attempt}] get_responses_from_printer error: {e}")
+            if attempt == MAX_RETRIES:
+                return jsonify({"error": str(e)}), 500
+            time.sleep(RETRY_DELAY)
 
 def config_printer(printer_ip, baudrate):
     if not printer_ip or not baudrate:

@@ -121,3 +121,4 @@ class Printer:
                         self.printer_status = 'Printing'
                     self.print_progress = percent
                     self.last_sd_byte = done
+        self.raw_buffer = self.raw_buffer[-100:]

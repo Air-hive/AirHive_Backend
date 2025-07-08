@@ -4,7 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="16449f67-4694-4abc-a5cb-c82ba67d7dc3" name="Changes" comment="Fixing Status return" />
+    <list default="true" id="16449f67-4694-4abc-a5cb-c82ba67d7dc3" name="Changes" comment="Fixing Status return">
+      <change afterPath="$PROJECT_DIR$/css/main.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/js/main.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/css/main.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/main.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/printer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PrinterInfo.py" beforeDir="false" afterPath="$PROJECT_DIR$/PrinterInfo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PrinterToBackend.py" beforeDir="false" afterPath="$PROJECT_DIR$/PrinterToBackend.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UploadFileToPrinter.py" beforeDir="false" afterPath="$PROJECT_DIR$/UploadFileToPrinter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+    </list>
     <list id="75eabc75-714f-4a87-ab32-ff9eef7a205a" name="Changes by abdullahzayed" comment="" />
     <list id="d083aa6c-f208-4f43-a09f-038eb40e77e8" name="Changes by mosa3" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -68,14 +80,24 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/abdullahzayed/Desktop/GP_tests/Local_Backend",
+    "last_opened_file_path": "D:/gradproj/LocalBackend/static",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.intellij.pycharm.community.ide.impl.configuration.PythonContentEntriesConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\gradproj\LocalBackend\static" />
+      <recent name="D:\gradproj\LocalBackend" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\gradproj\LocalBackend" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -208,10 +230,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="Fixing Status return" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/LocalBackend$PrinterToBackend.coverage" NAME="PrinterToBackend Coverage Results" MODIFIED="1751975949198" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/LocalBackend$PrinterToBackend.coverage" NAME="PrinterToBackend Coverage Results" MODIFIED="1751998950780" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/LocalBackend$PrinterInfo.coverage" NAME="PrinterInfo Coverage Results" MODIFIED="1751821099329" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/LocalBackend$LocalBackend.coverage" NAME="LocalBackend Coverage Results" MODIFIED="1751800593918" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/LocalBackend$Flask__app_py_.coverage" NAME="Flask (app.py) Coverage Results" MODIFIED="1751975005828" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/LocalBackend$UploadFileToPrinter.coverage" NAME="UploadFileToPrinter Coverage Results" MODIFIED="1751818475806" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/LocalBackend$Flask__app_py_.coverage" NAME="Flask (app.py) Coverage Results" MODIFIED="1752014675744" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LocalBackend$UploadFileToPrinter.coverage" NAME="UploadFileToPrinter Coverage Results" MODIFIED="1752008971760" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

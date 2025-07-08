@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Printer Farm - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <header class="app-header">
+        <h1>3D Printer Farm Management</h1>
+        <div class="status-indicator">
+            <span class="online-dot"></span>
+            <span>Connected</span>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <section class="printer-list-section">
+            <div class="section-header">
+                <h2>Discovered Printers</h2>
+                <button id="refresh-printers" class="btn-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 4v6h-6"></path>
+                        <path d="M1 20v-6h6"></path>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="printer-grid" id="printer-grid">
+                <!-- Printers will be dynamically inserted here -->
+            </div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchPrinters();
+            
+            document.getElementById('refresh-printers').addEventListener('click', fetchPrinters);
+            
+            async function fetchPrinters() {
+                try {
+                    const response = await fetch('/api/printers');
+                    const printers = await response.json();
+                    renderPrinters(printers);
+                } catch (error) {
+                    console.error('Error fetching printers:', error);
+                }
+            }
+            
+            function renderPrinters(printers) {
+                const grid = document.getElementById('printer-grid');
+                grid.innerHTML = '';
+                
+                printers.forEach(printer => {
+                    const printerCard = document.createElement('div');
+                    printerCard.className = `printer-card ${printer.status === 'online' ? 'online' : 'offline'}`;
+                    printerCard.innerHTML = `
+                        <div class="printer-status ${printer.status}"></div>
+                        <h3>${printer.name}</h3>
+                        <p>${printer.ip}</p>
+                        <div class="printer-meta">
+                            <span>Last seen: ${new Date(printer.last_seen).toLocaleTimeString()}</span>
+                        </div>
+                        <button class="btn-control" onclick="location.href='/printer?ip=${printer.ip}'">
+                            Control Panel
+                        </button>
+                    `;
+                    grid.appendChild(printerCard);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

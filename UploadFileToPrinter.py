@@ -1,4 +1,5 @@
 import time
+from fileinput import filename
 
 from mdns import printers
 from PrinterToBackend import  send_commandd_to_printer
@@ -25,21 +26,16 @@ def format_gcode_line(line, line_number):
 
 
 def send_chunk(printer_ip,chunk):
-    payload = {"commands": [chunk]}
-    # print(payload)
     send_commandd_to_printer(printer_ip,chunk)
     time.sleep(0.001)
 
 
 # Send header
 
-def upload_file_to_printer(printer_ip, data):
+def upload_file_to_printer(printer_ip, file_name,file_path):
     max_len = 45 * 1024  # chunk size in characters
-    file_name = data.get('file_name')
     file_name = file_name.split('.')[0]
     file_name = file_name[:8] + ".gco"
-    file_path = data.get('file_path')
-
 
     header = ['M110 N0', 'M21', f'M28 {file_name}']
     footer = ['M29']
@@ -61,14 +57,17 @@ def upload_file_to_printer(printer_ip, data):
                 if curr_len >= max_len:
                     try:
                         send_chunk(printer_ip,curr_chunk)
+                        print('Sending file to printer')
                     except ConnectionResetError:
                         print('Connection error')
                     curr_chunk = []
-                    curr_len = 0
+                    curr_len = 13
 
         if curr_chunk:
             try:
                 send_chunk(printer_ip,curr_chunk)
+                print('Sending file to printer')
             except ConnectionResetError:
                 pass
     send_chunk(printer_ip,footer)
+    print('Done sending file to printer')
