@@ -33,6 +33,7 @@ class Printer:
             responses.pop()
         else:
             self.buffer = ""
+
         self.raw_buffer.extend([r for r in responses if r])
         for line in responses:
             line = line.strip()
@@ -121,4 +122,5 @@ class Printer:
                         self.printer_status = 'Printing'
                     self.print_progress = percent
                     self.last_sd_byte = done
-        self.raw_buffer = self.raw_buffer[-100:]
+        if len(self.raw_buffer) > 100:
+            self.raw_buffer = self.raw_buffer[-100:]

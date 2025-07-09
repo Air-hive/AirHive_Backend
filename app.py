@@ -48,7 +48,7 @@ mdns.go()
 # @app.route('/printer')
 # def printer_control():
 #     return render_template('printer.html')
-
+#
 @app.route('/api/printers', methods=['GET'])
 def get_printers():
     with mdns.printer_lock:
@@ -84,7 +84,7 @@ def update_printer_responses(printer_ip):
     responses = data.get("responses")
     if responses:
         printer.buffer += responses
-        printer.update_printer_variables()
+    printer.update_printer_variables()
 
     return jsonify({'all_responses': "updated"}), status
 
@@ -92,16 +92,17 @@ def update_printer_responses(printer_ip):
 @app.route('/api/raw-responses/<printer_ip>', methods=['GET'])
 def get_raw_responses(printer_ip):
     printer = printers[printer_ip]
-    response = get_responses_from_printer(printer_ip)
-
-    response_obj, status = response
+    response_obj, status = get_responses_from_printer(printer_ip)
     data = response_obj.get_json()
     responses = data.get("responses")
+
     if responses:
         printer.buffer += responses
-        printer.update_printer_variables()
-    raw_buffer_copy = printer.raw_buffer
-    printer.clear_raw_buffer()
+
+    update_printer_responses(printer_ip)
+
+    raw_buffer_copy = printers[printer_ip].raw_buffer.copy()  # ✅ Copy AFTER update
+    printers[printer_ip].raw_buffer = []  # ✅ Clear buffer
 
     return jsonify({'raw_responses': raw_buffer_copy}), status
 
@@ -307,7 +308,6 @@ def upload_file(printer_ip):
     # Optional: Add to print queue or process immediately
     # add_to_print_queue(printer_ip, save_path)
     file_path = UPLOAD_FOLDER + "/" + printer_ip + "/" + filename
-    print(file_path)
     request_lock.acquire(blocking=True)
     upload_file_to_printer(printer_ip, filename,file_path)
     request_lock.release()
@@ -319,6 +319,27 @@ def upload_file(printer_ip):
         'size': os.path.getsize(save_path)
     }), 201
 
+@app.route('/api/printer-page-data/<printer_ip>', methods=['GET'])
+def get_printer_page_data(printer_ip):
+    get_temperature(printer_ip)
+    get_status(printer_ip)
+    get_print_elapsed_time(printer_ip)
+    raw_responses, raw_responses_code = get_raw_responses(printer_ip)
+    get_axis_coordinates(printer_ip)
+    printer = printers[printer_ip]
+    return jsonify({
+        'hotend_temperature': printer.hotend_temperature,
+        'hotend_target': printer.hotend_target_temperature,
+        'heatbed_temperature': printer.heatbed_temperature,
+        'heatbed_target': printer.heatbed_target_temperature,
+        'status': printer.printer_status,
+        'print_elapsed_time': printer.elapsed_time,
+        'raw_responses': raw_responses.json.get("raw_responses"),
+        'X': printer.x_coordinate,
+        'Y': printer.y_coordinate,
+        'Z': printer.z_coordinate,
+        'E': printer.E_coordinate
+    }), 200
 
 @app.route('/api/print-file/<printer_ip>', methods=['POST'])
 def print_file(printer_ip):

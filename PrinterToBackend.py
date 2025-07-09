@@ -13,20 +13,24 @@ def send_commandd_to_printer(printer_ip, commands):
     payload = {"commands": commands}
 
     for attempt in range(1, MAX_RETRIES + 1):
+        global RETRY_DELAY
+        delay = RETRY_DELAY
         try:
             response = requests.post(url, json=payload, timeout=5)
-
             if response.status_code == 200:
                 return jsonify(response.json()), 200
             else:
-                # print(f"[Attempt {attempt}] Printer returned status {response.status_code}")
-                return jsonify({"error": f"Printer returned {response.status_code}"}), 500
+                delay *= 10
+                print(f"[Attempt {attempt}] Printer returned status {response.status_code}")
 
         except requests.exceptions.RequestException as e:
-            # print(f"[Attempt {attempt}] send_commandd_to_printer error: {e}")
+            delay *= 10
+            print(f"[Attempt {attempt}] send_commandd_to_printer error: {e}")
             if attempt == MAX_RETRIES:
                 return jsonify({"error": str(e)}), 500
-            time.sleep(RETRY_DELAY)
+        time.sleep(delay)
+    print("[INFO] End of sending commands...")
+    return jsonify({"error": "Unknown Error"}), 500
 
 
 def get_responses_from_printer(printer_ip):
