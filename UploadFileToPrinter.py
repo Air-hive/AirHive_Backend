@@ -22,7 +22,7 @@ def format_gcode_line(line, line_number):
         # Format with line number and checksum
         gcode = f'N{line_number} {line_no_comment}'
         checksum = calculate_checksum(gcode)
-        print("line ",gcode, checksum)
+        # print("line ",gcode, checksum)
         return f'{gcode}*{checksum}'
     except Exception as e:
         print("error formatting", e)
