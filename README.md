@@ -1,6 +1,9 @@
 **Back-end for AirHive 3D printing Management System**
 
 
+Check the project's full documentation [here](https://github.com/Air-hive/AirHive_Frontend/blob/master/AirHiveDocumentation.pdf)
+
+
 ![Project Structure](Backend.png "Logo Title Text 1")
 
 
