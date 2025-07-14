@@ -1,6 +1,8 @@
 **Back-end for AirHive 3D printing Management System**
 
-**BACKEND**
+
+![Project Structure](Backend.png "Logo Title Text 1")
+
 
 **3.1	Introduction**
 
